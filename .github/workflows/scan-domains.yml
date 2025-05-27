@@ -1,0 +1,48 @@
+name: Expired Domain Scanner
+
+on:
+  schedule:
+    # 每天UTC时间00:00运行 (北京时间8:00)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  scan-domains:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        
+    - name: Install Chrome for Selenium
+      run: |
+        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+        
+    - name: Run domain scanner
+      env:
+        EXPIRED_DOMAINS_USERNAME: ${{ secrets.EXPIRED_DOMAINS_USERNAME }}
+        EXPIRED_DOMAINS_PASSWORD: ${{ secrets.EXPIRED_DOMAINS_PASSWORD }}
+      run: |
+        python src/scanner.py
+        
+    - name: Update GitHub Pages
+      run: |
+        cp results/domain_analysis.html docs/index.html
+        
+    - name: Commit and push results
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: 'Update domain scan results'
+        file_pattern: 'docs/index.html results/*'
