@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 过期域名AI分析系统</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { font-size: 3rem; margin-bottom: 20px; }
+        .status { 
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        .btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 过期域名AI分析系统</h1>
+        <p>AI驱动的过期域名价值评估和投资推荐平台</p>
+        
+        <div class="status">
+            <h2>✅ 系统状态</h2>
+            <p>自动化扫描器已部署并运行正常</p>
+            <p>每日自动更新 | AI智能分析 | 实时监控</p>
+        </div>
+        
+        <a href="https://github.com/a220ca/expired-domain-scanner" class="btn">📖 查看源码</a>
+        <a href="https://github.com/a220ca/expired-domain-scanner/actions" class="btn">🔄 查看运行状态</a>
+        
+        <p style="margin-top: 40px; opacity: 0.8;">
+            最后更新: <span id="time"></span>
+        </p>
+    </div>
+    
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString('zh-CN');
+    </script>
+</body>
+</html>
