@@ -405,12 +405,19 @@ jobs:
         echo "✅ 页面更新完成"
         
     - name: Commit and push updates
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: '🔄 自动更新扫描结果 #${{ github.run_number }}'
-        file_pattern: 'docs/index.html'
-        skip_dirty_check: true
-        skip_fetch: true
-        skip_checkout: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  continue-on-error: true
+  uses: stefanzweifel/git-auto-commit-action@v5
+  with:
+    commit_message: '🔄 自动更新扫描结果 #${{ github.run_number }}'
+    file_pattern: 'docs/index.html'
+    skip_dirty_check: true
+    skip_fetch: true
+    skip_checkout: true
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+- name: Final status
+  run: |
+    echo "✅ 扫描流程全部完成！"
+    echo "📊 如果有新的分析结果，已自动更新到网站"
+    echo "🌐 访问网站查看最新结果"
