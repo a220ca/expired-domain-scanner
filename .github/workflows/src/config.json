@@ -1,0 +1,60 @@
+{
+  "expired_domains": {
+    "base_url": "https://www.expireddomains.net",
+    "login_url": "https://www.expireddomains.net/login/",
+    "search_url": "https://www.expireddomains.net/domain-lists/",
+    "username": "",
+    "password": ""
+  },
+  "scanning": {
+    "max_pages": 5,
+    "delay_min": 2,
+    "delay_max": 5,
+    "retry_attempts": 3,
+    "timeout": 30
+  },
+  "filters": {
+    "min_domain_age": 1,
+    "max_domain_length": 20,
+    "min_backlinks": 5,
+    "preferred_tlds": [".com", ".net", ".org", ".io", ".ai"],
+    "exclude_keywords": ["adult", "casino", "porn", "gambling"],
+    "min_score_threshold": 50
+  },
+  "analysis": {
+    "weights": {
+      "length_score": 0.15,
+      "keyword_score": 0.25,
+      "brandability_score": 0.20,
+      "seo_score": 0.20,
+      "technical_score": 0.15,
+      "commercial_score": 0.05
+    },
+    "high_value_keywords": [
+      "ai", "crypto", "bitcoin", "nft", "tech", "app", "web", "digital",
+      "online", "shop", "store", "market", "finance", "investment",
+      "healthcare", "medical", "education", "learning", "consulting",
+      "service", "solution", "platform", "system", "network", "cloud",
+      "data", "analytics", "mobile", "software", "api", "saas"
+    ]
+  },
+  "output": {
+    "results_dir": "results",
+    "html_output": true,
+    "json_output": true,
+    "csv_output": true,
+    "max_results_display": 100
+  },
+  "notifications": {
+    "email_enabled": false,
+    "email_threshold": 80,
+    "webhook_url": "",
+    "slack_webhook": ""
+  },
+  "github_pages": {
+    "enabled": true,
+    "title": "过期域名扫描分析报告",
+    "description": "AI驱动的过期域名价值分析系统",
+    "update_frequency": "daily"
+  }
+}
