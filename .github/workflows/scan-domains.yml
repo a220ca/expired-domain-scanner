@@ -373,6 +373,7 @@ jobs:
           echo "✅ 登录凭据已配置，准备开始实际扫描..."
           if [ -f "src/scanner.py" ]; then
             echo "📁 找到扫描器文件，开始执行..."
+            echo "🚀 正在启动Python扫描器..."
             python src/scanner.py || echo "⚠️  扫描器执行完成（可能包含警告）"
           else
             echo "⚠️  未找到扫描器文件 src/scanner.py"
@@ -405,19 +406,20 @@ jobs:
         echo "✅ 页面更新完成"
         
     - name: Commit and push updates
-  continue-on-error: true
-  uses: stefanzweifel/git-auto-commit-action@v5
-  with:
-    commit_message: '🔄 自动更新扫描结果 #${{ github.run_number }}'
-    file_pattern: 'docs/index.html'
-    skip_dirty_check: true
-    skip_fetch: true
-    skip_checkout: true
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: '🔄 自动更新扫描结果 #${{ github.run_number }}'
+        file_pattern: 'docs/index.html results/*'
+        skip_dirty_check: true
+        skip_fetch: true
+        skip_checkout: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-- name: Final status
-  run: |
-    echo "✅ 扫描流程全部完成！"
-    echo "📊 如果有新的分析结果，已自动更新到网站"
-    echo "🌐 访问网站查看最新结果"
+    - name: Final status
+      run: |
+        echo "✅ 扫描流程全部完成！"
+        echo "📊 如果有新的分析结果，已自动更新到网站"
+        echo "🌐 访问网站查看最新结果: https://a220ca.github.io/expired-domain-scanner"
+        echo "🎉 域名扫描和AI分析系统运行成功！"
