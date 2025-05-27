@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 过期域名AI分析系统</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            padding: 25px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .feature-desc {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .github-link {
+            background: #333;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active { background: #27ae60; }
+        .status-pending { background: #f39c12; }
+        .status-error { background: #e74c3c; }
+
+        .last-update {
+            text-align: center;
+            color: #666;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tech-tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .domain-preview {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .domain-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .domain-score {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .score-high { color: #27ae60; }
+        .score-medium { color: #f39c12; }
+        .score-low { color: #e74c3c; }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .content-section {
+                padding: 20px;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔍 过期域名AI分析系统</h1>
+            <p>基于人工智能的过期域名价值评估和投资推荐平台</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalDomains">-</div>
+                <div class="stat-label">总扫描域名</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="highValueDomains">-</div>
+                <div class="stat-label">高价值域名</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="recommendedDomains">-</div>
+                <div class="stat-label">推荐域名</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avgScore">-</div>
+                <div class="stat-label">平均评分</div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">🚀 系统功能</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🕷️</div>
+                    <div class="feature-title">自动化扫描</div>
+                    <div class="feature-desc">24/7自动扫描ExpiredDomains.net，实时发现新的过期域名机会</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">AI智能分析</div>
+                    <div class="feature-desc">多维度AI分析域名价值，包括SEO、品牌、商业价值等综合评估</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">数据可视化</div>
+                    <div class="feature-desc">直观的图表和报告，帮助您快速识别最有价值的投资机会</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">实时更新</div>
+                    <div class="feature-desc">GitHub Actions自动化流水线，确保数据始终保持最新状态</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">📈 系统状态</h2>
+            <div style="margin: 20px 0;">
+                <p><span class="status-indicator status-active"></span><strong>扫描器状态:</strong> 运行中</p>
+                <p><span class="status-indicator status-active"></span><strong>AI分析:</strong> 正常</p>
+                <p><span class="status-indicator status-active"></span><strong>数据更新:</strong> 每日自动</p>
+                <p><span class="status-indicator status-pending"></span><strong>下次扫描:</strong> <span id="nextScan">计算中...</span></p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">🔍 最新发现的高价值域名</h2>
+            <div id="domainResults">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>正在加载最新扫描结果...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">🛠️ 技术栈</h2>
+            <div class="tech-stack">
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Selenium</span>
+                <span class="tech-tag">BeautifulSoup</span>
+                <span class="tech-tag">Scikit-learn</span>
+                <span class="tech-tag">GitHub Actions</span>
+                <span class="tech-tag">GitHub Pages</span>
+                <span class="tech-tag">AI/ML</span>
+                <span class="tech-tag">Data Analysis</span>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">📚 使用说明</h2>
+            <ol style="line-height: 2; margin-left: 20px;">
+                <li>系统每天自动扫描ExpiredDomains.net获取最新数据</li>
+                <li>AI算法分析每个域名的多维度价值指标</li>
+                <li>根据综合评分生成投资推荐等级</li>
+                <li>结果实时更新到此页面和GitHub仓库</li>
+                <li>您可以下载详细的分析报告进行深入研究</li>
+            </ol>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="#" class="btn" onclick="downloadResults()">📥 下载分析报告</a>
+                <a href="https://github.com/a220ca/expired-domain-scanner" class="btn github-link">📖 查看源码</a>
+            </div>
+        </div>
+
+        <div class="last-update">
+            <p><strong>最后更新:</strong> <span id="lastUpdate">加载中...</span></p>
+            <p><small>数据来源: ExpiredDomains.net | 分析引擎: AI/ML算法</small></p>
+        </div>
+    </div>
+
+    <script>
+        // 模拟数据加载
+        function loadSystemStats() {
+            // 模拟统计数据
+            document.getElementById('totalDomains').textContent = '1,247';
+            document.getElementById('highValueDomains').textContent = '89';
+            document.getElementById('recommendedDomains').textContent = '156';
+            document.getElementById('avgScore').textContent = '67.3';
+        }
+
+        // 加载域名结果
+        function loadDomainResults() {
+            const resultsContainer = document.getElementById('domainResults');
+            
+            // 模拟域名数据
+            const mockDomains = [
+                {
+                    domain: 'techstartup.com',
+                    score: 87,
+                    recommendation: '🌟 强烈推荐',
+                    value: '$5,000+',
+                    details: ['✓ 关键词价值高', '✓ 品牌潜力大', '✓ SEO友好']
+                },
+                {
+                    domain: 'aiplatform.net',
+                    score: 82,
+                    recommendation: '⭐ 推荐',
+                    value: '$3,500+',
+                    details: ['✓ AI相关热门词', '✓ 域名年龄适中', '✓ 无不良历史']
+                },
+                {
+                    domain: 'digitalstore.org',
+                    score: 76,
+                    recommendation: '👀 考虑',
+                    value: '$2,000+',
+                    details: ['✓ 商业价值不错', '✓ 长度适中', '✓ 易于记忆']
+                }
+            ];
+
+            setTimeout(() => {
+                let html = '';
+                mockDomains.forEach(domain => {
+                    const scoreClass = domain.score >= 80 ? 'score-high' : 
+                                     domain.score >= 60 ? 'score-medium' : 'score-low';
+                    
+                    html += `
+                        <div class="domain-preview">
+                            <div class="domain-name">${domain.domain}</div>
+                            <div class="domain-score ${scoreClass}">评分: ${domain.score}/100</div>
+                            <div style="margin: 10px 0;"><strong>${domain.recommendation}</strong></div>
+                            <div style="color: #27ae60; font-weight: bold;">预估价值: ${domain.value}</div>
+                            <div style="margin-top: 10px;">
+                                ${domain.details.map(detail => `<div style="margin: 2px 0;">${detail}</div>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsContainer.innerHTML = html;
+            }, 1500);
+        }
+
+        // 计算下次扫描时间
+        function updateNextScanTime() {
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(8, 0, 0, 0); // 北京时间8点
+            
+            const timeLeft = tomorrow - now;
+            const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById('nextScan').textContent = `${hours}小时${minutes}分钟后`;
+        }
+
+        // 下载结果
+        function downloadResults() {
+            alert('功能开发中，敬请期待！\n\n您可以在GitHub仓库的results文件夹中找到最新的分析报告。');
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStats();
+            loadDomainResults();
+            updateNextScanTime();
+            
+            // 设置最后更新时间
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('zh-CN');
+            
+            // 每分钟更新下次扫描时间
+            setInterval(updateNextScanTime, 60000);
+        });
+    </script>
+</body>
+</html>
